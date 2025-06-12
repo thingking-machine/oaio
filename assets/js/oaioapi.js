@@ -64,7 +64,6 @@ self.onmessage = async function (event) {
 			model: llmSettings.model || machineConfig.llm,
 			max_output_tokens: llmSettings.max_output_tokens || 8000,
 			temperature: llmSettings.temperature || 1.0,
-			top_p: llmSettings.top_p || 0.9,
 			reasoning: {
 				"effort": llmSettings.reasoning_effort || "high",
 				"summary": llmSettings.reasoning_summary || "auto"

@@ -11,9 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else if (key === 'max_output_tokens') {
 			const numValue = parseInt(value, 10);
 			llmSettings[key] = isNaN(numValue) ? value : numValue;
-		} else if (key === 'top_p') {
-			const numValue = parseFloat(value);
-			llmSettings[key] = isNaN(numValue) ? value : numValue;
 		} else {
 			llmSettings[key] = value;
 		}

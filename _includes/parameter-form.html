@@ -2,25 +2,29 @@
   <form id="llmParamsForm">
     <div class="form-row">
       <label for="model">model:</label>
-      <input type="text" id="model" name="model" value="{{ site.lm.model }}">
+      <input type="text" id="model" name="model" value="gpt-4.1-mini">
     </div>
     <div class="form-row"> <!-- Added form-row class -->
       <label for="max_output_tokens">max_output_tokens:</label>
-      <input type="number" id="max_output_tokens" name="max_output_tokens" value="{{ site.lm.max_output_tokens }}" step="1" min="1" max="100000">
+      <input type="number" id="max_output_tokens" name="max_output_tokens" value="10240" step="1" min="1" max="1000000">
     </div>
     <div class="form-row">
       <label for="reasoning_effort">reasoning_effort:</label>
-      <input type="text" id="reasoning_effort" name="reasoning_effort" value="{{ site.lm.reasoning_effort }}">
+      <input type="text" id="reasoning_effort" name="reasoning_effort" value="high">
     </div>
     <div class="form-row">
       <label for="reasoning_summary">reasoning_summary:</label>
-      <input type="text" id="reasoning_summary" name="reasoning_summary" value="{{ site.lm.reasoning_summary}}">
+      <input type="text" id="reasoning_summary" name="reasoning_summary" value="auto">
     </div>
     <div class="form-row"> <!-- Added form-row class -->
       <label for="temperature">temperature:</label>
       <input type="number" id="temperature" name="temperature" value="1.0" step="0.1" min="0.0" max="2.0">
     </div>
-    <div class="form-button-row">
+    <div class="form-row"> <!-- Added form-row class -->
+      <label for="top_p">top_p:</label>
+      <input type="number" id="top_p" name="top_p" value="0.7" step="0.1" min="0.1" max="1">
+    </div>
+    <div> <!-- This div can remain as is for the button, or you can add form-row and adjust alignment if needed -->
       <a href="#" id="navigateToMachineLink" class="styled-link-button">Thingk with these settings, Machine.</a>
     </div>
   </form>

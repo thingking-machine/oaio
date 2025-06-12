@@ -263,13 +263,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			try {
 				const cmjMessages = platoHtmlToCmj(htmlContent); // platoHtmlToCmj is global
 
+				const mujMessages = platoHtmlToMuj(htmlContent)
+
 				const userQueryParameters = {
 					config: window.machineConfig,
 					settings: window.llmSettings,
-					messages: cmjMessages
+					messages: mujMessages
 				};
 
-				console.log('Alt+Shift: Launching LLM worker with CMJ messages:', userQueryParameters);
+				console.log('Alt+Shift: Launching LLM worker with MUJ messages:', userQueryParameters);
 				const llmWorker = new Worker(machineConfig.work);
 
 				llmWorker.onmessage = function (e) {
@@ -316,9 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
 							};
 
 							cmjMessages.push(newCmjMessage);
-
-							// CmjToPlatoText is global
 							const updatedPlatoText = CmjToPlatoText(cmjMessages);
+
 							if (typeof updatedPlatoText !== 'string') {
 								console.error('Failed to convert updated CMJ to PlatoText.');
 								alert('Error processing the LLM response for display.');

@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 										.filter(contentPart => contentPart && typeof contentPart.text === 'string')
 										.map(contentPart => contentPart.text)
 								)
-								.join(' ');
+								.join('\n');
 
 							const desoupedThoughts = llmSoupToText(thoughtsText);
 							console.log('Thoughts text:', desoupedThoughts);

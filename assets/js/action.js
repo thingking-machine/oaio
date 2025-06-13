@@ -298,9 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
 							console.log('Regular text:', desoupedText);
 
 							const thoughtsText = llmResponseData
-								.filter(item => item.type === 'reasoning' && Array.isArray(item.content))
+								.filter(item => item.type === 'reasoning' && Array.isArray(item.summary))
 								.flatMap(item =>
-									item.content
+									item.summary
 										.filter(contentPart => contentPart && typeof contentPart.text === 'string')
 										.map(contentPart => contentPart.text)
 								)
@@ -309,9 +309,9 @@ document.addEventListener('DOMContentLoaded', () => {
 							console.log('Thoughts text:', desoupedThoughts);
 
 							const newCmjMessage = {
-								role: llmResponseData.role,
+								role: 'assistant',
 								name: machineConfig.name,
-								content: llmResponseData.content
+								content: desoupedText
 							};
 
 							cmjMessages.push(newCmjMessage);

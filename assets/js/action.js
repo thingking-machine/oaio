@@ -294,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 										.map(contentPart => contentPart.text)
 								)
 								.join(' ');
+
 							const desoupedText = llmSoupToText(regularText);
 							console.log('Regular text:', desoupedText);
 
@@ -305,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 										.map(contentPart => contentPart.text)
 								)
 								.join(' ');
+
 							const desoupedThoughts = llmSoupToText(thoughtsText);
 							console.log('Thoughts text:', desoupedThoughts);
 

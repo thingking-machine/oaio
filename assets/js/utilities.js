@@ -534,96 +534,95 @@ function platoTextToMuj(platoText) {
 }
 
 /**
- * Transforms platoHtml format (HTML string containing dialogue) to MUJ (Multi-User JSON) array
- * for OpenAI API. It uses DOMParser to parse HTML and assumes dialogue turns are within
- * <p class="dialogue"> elements, with text content in "Speaker: Utterance" format.
+ * Transforms platoHtml format to MUJ (Multi-User JSON) array for OpenAI API.
+ * It expects HTML with <p class="dialogue"><span class="speaker">Speaker</span> Utterance</p> structure.
+ * The assistant's name is determined by window.machineConfig.name.
  *
- * Consecutive non-assistant messages are concatenated into a single 'user' message.
- * Assistant messages (from 'Thingking-Machine') become 'assistant' messages.
- * Messages do not contain a 'name' field.
+ * Consecutive non-assistant messages are concatenated into a single 'user' message,
+ * including the speaker's name. Assistant messages become 'assistant' messages
+ * with only the utterance. Messages do not contain a 'name' field in the output.
  *
  * @param {string} platoHtml - The HTML string containing the dialogue.
- *                             Expected to contain elements like <p class="dialogue">Speaker: Utterance</p>.
  * @returns {Array<Object>} - An array of message objects suitable for OpenAI API.
  *                            Each object has 'role' ('user' or 'assistant') and 'content' (string).
- *                            Returns an empty array if platoHtml is empty, whitespace, or contains no valid dialogue elements.
+ *                            Returns an empty array if platoHtml is empty or whitespace.
  * @throws {Error} If platoHtml is null, undefined, or not a string.
+ * @throws {Error} If window.machineConfig.name is not available or empty.
  */
 function platoHtmlToMuj(platoHtml) {
     if (platoHtml === null || typeof platoHtml !== 'string') {
         throw new Error('Invalid input: platoHtml must be a string.');
     }
-    const trimmedPlatoHtml = platoHtml.trim();
-    if (!trimmedPlatoHtml) {
-        return []; // Return empty array for empty or whitespace-only input
+    if (!platoHtml.trim()) {
+        return []; // Return empty array for empty or whitespace-only HTML
     }
+
+    if (!window.machineConfig || typeof window.machineConfig.name !== 'string' || !window.machineConfig.name.trim()) {
+        console.error('platoHtmlToMuj: machineConfig.name is not available or empty. Please ensure window.machineConfig.name is correctly set.');
+        throw new Error('machineConfig.name is not configured. Cannot determine assistant messages.');
+    }
+    const assistantNameUpper = window.machineConfig.name.toUpperCase();
 
     const mujMessages = [];
     let currentUserContentParts = []; // Stores "Speaker: Utterance" strings for the current user block
 
-    const ASSISTANT_NAME_UPPER = 'THINGKING-MACHINE';
-
-    // 1. Parse HTML using DOMParser
     const parser = new DOMParser();
-    const doc = parser.parseFromString(trimmedPlatoHtml, 'text/html');
+    const doc = parser.parseFromString(platoHtml, 'text/html');
+    const paragraphs = doc.querySelectorAll('p.dialogue');
 
-    // Select elements assumed to contain dialogue turns.
-    const dialogueElements = doc.querySelectorAll('p.dialogue');
-
-    if (dialogueElements.length === 0) {
-        console.warn("platoHtmlToMuj: No 'p.dialogue' elements found in the provided HTML. If dialogue is structured differently, the selector needs an update.");
+    if (paragraphs.length === 0) {
+        console.warn("platoHtmlToMuj: No 'p.dialogue' elements found. Ensure HTML contains <p class=\"dialogue\"><span class=\"speaker\">...</span>...</p> structures.");
     }
 
-    dialogueElements.forEach(element => { // NodeList from querySelectorAll is iterable
-        const fullText = element.textContent ? element.textContent.trim() : '';
-        if (!fullText) {
-            // Skip elements with no text content
+    paragraphs.forEach(p => {
+        const speakerSpan = p.querySelector('span.speaker');
+        if (!speakerSpan) {
+            console.warn('platoHtmlToMuj: Skipping paragraph due to missing speaker span:', p.outerHTML);
+            return; // Skip malformed paragraphs
+        }
+
+        const speaker = speakerSpan.textContent.trim();
+
+        // Extract utterance: text content of the paragraph after the speaker span.
+        const fullParaText = p.textContent || '';
+        let utterance = fullParaText.substring(speakerSpan.textContent.length).trim();
+
+        // Remove a leading colon if it's part of the utterance after the speaker span.
+        if (utterance.startsWith(':')) {
+            utterance = utterance.substring(1).trim();
+        }
+
+        // If both speaker and utterance are empty, skip (though speaker should exist if speakerSpan was found)
+        if (!speaker && !utterance) {
+            console.warn('platoHtmlToMuj: Skipping paragraph with empty speaker and utterance:', p.outerHTML);
             return;
         }
 
-        // Extract speaker and utterance from "Speaker: Utterance"
-        const colonIndex = fullText.indexOf(':');
-        let speaker, utterance;
+        const isAssistantMessage = speaker.toUpperCase() === assistantNameUpper;
 
-        // Ensure colon exists, is not the first character, and there's content after it.
-        if (colonIndex > 0 && colonIndex < fullText.length - 1) {
-            speaker = fullText.substring(0, colonIndex).trim();
-            utterance = fullText.substring(colonIndex + 1).trim();
-        } else {
-            console.warn('platoHtmlToMuj: Skipping HTML element with malformed content (expected "Speaker: Utterance") inside <p class="dialogue">:', element.outerHTML);
-            return; // Skip this element as it doesn't match the expected format
-        }
-
-        if (!speaker || !utterance) { // Safeguard, though colonIndex check should cover this
-             console.warn('platoHtmlToMuj: Could not extract speaker or utterance from:', fullText);
-            return;
-        }
-
-        const speakerUpper = speaker.toUpperCase();
-
-        if (speakerUpper === ASSISTANT_NAME_UPPER) {
-            // This is an assistant message
-            // First, if there's accumulated user content, push it
+        if (isAssistantMessage) {
+            // This is an assistant message.
+            // First, if there's accumulated user content, push it.
             if (currentUserContentParts.length > 0) {
                 mujMessages.push({
                     role: 'user',
-                    content: currentUserContentParts.join('\n') // Join with newline
+                    content: currentUserContentParts.join('\n')
                 });
                 currentUserContentParts = []; // Reset for the next user block
             }
-            // Then, push the assistant message
+            // Then, push the assistant message (only the utterance).
             mujMessages.push({
                 role: 'assistant',
                 content: utterance
             });
         } else {
-            // This is a user message part (could be from any non-assistant speaker)
-            // Add "Speaker: Utterance" to the current user content buffer
+            // This is a user message part (from any non-assistant speaker).
+            // Add "Speaker: Utterance" to the current user content buffer.
             currentUserContentParts.push(`${speaker}: ${utterance}`);
         }
     });
 
-    // After iterating through all elements, if there's any remaining user content, push it
+    // After iterating through all paragraphs, if there's any remaining user content, push it.
     if (currentUserContentParts.length > 0) {
         mujMessages.push({
             role: 'user',

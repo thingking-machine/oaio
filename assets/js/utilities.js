@@ -626,7 +626,7 @@ function platoHtmlToMuj(platoHtml) {
     if (currentUserContentParts.length > 0) {
         mujMessages.push({
             role: 'user',
-            content: currentUserContentParts.join('\n')
+            content: currentUserContentParts.join('\n\n')
         });
     }
 

@@ -34,12 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Capture HTML from original static <p class="dialogue"> elements and then hide them.
 	// These elements are not moved, respecting their original structure for other potential uses,
 	// but are hidden to cede display control to the dynamic dialogueWrapper.
-	const originalStaticDialogueElements = Array.from(contentContainer.querySelectorAll('p.dialogue'));
-	let initialHtmlFromStatic = '';
-	originalStaticDialogueElements.forEach(p => {
-		initialHtmlFromStatic += p.outerHTML; // Capture their HTML content
-		p.style.display = 'none';          // Hide the original static element
-	});
+	// const originalStaticDialogueElements = Array.from(contentContainer.querySelectorAll('p.dialogue'));
+	// let initialHtmlFromStatic = '';
+	// originalStaticDialogueElements.forEach(p => {
+	// 	initialHtmlFromStatic += p.outerHTML; // Capture their HTML content
+	// 	p.style.display = 'none';          // Hide the original static element
+	// });
 
 	// 1. Create a wrapper for the dialogue content (will be populated by updateDisplayState)
 	const dialogueWrapper = document.createElement('div');
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	chooseFileButton.id = 'chooseFileButton';
 	chooseFileButton.className = 'btn btn-primary'; // GitHub Primer style
 	chooseFileButton.textContent = 'Choose File to Load Dialogue';
-	chooseFileButton.style.padding = '10px 20px'; // Make button larger
+	chooseFileButton.style.padding = '10px 20px';
 	chooseFileButton.style.fontSize = '1.0rem';
 	filePickerContainer.appendChild(chooseFileButton);
 
@@ -85,16 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// If 'multilogue' is null, try to populate from static HTML. Otherwise, use existing.
 	let platoTextForInit = localStorage.getItem('multilogue');
 	if (platoTextForInit === null) {
-		if (initialHtmlFromStatic.trim() !== '') {
-			try {
-				platoTextForInit = platoHtmlToPlatoText(initialHtmlFromStatic);
-			} catch (e) {
-				console.error("Error converting initial static HTML to Plato text:", e);
-				platoTextForInit = ''; // Fallback to empty string on error
-			}
-		} else {
-			platoTextForInit = ''; // No static content, initialize as empty
-		}
+		platoTextForInit = ''; // Fallback to empty string
 		localStorage.setItem('multilogue', platoTextForInit);
 	}
 	// Now, localStorage.getItem('multilogue') is guaranteed to be a string (possibly empty).
@@ -128,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Initial display update
 	updateDisplayState();
+
 	// 7. Event listener for "Choose File" button
 	chooseFileButton.addEventListener('click', async () => {
 		try {
@@ -143,15 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			const fileContent = await file.text();
 
 			localStorage.setItem('multilogue', fileContent);
-			// No need to set textarea.value here, updateDisplayState will handle if we switch to editor
-			// OR, if we want to go directly to editor:
 			textarea.value = fileContent;
 			dialogueWrapper.style.display = 'none';
 			filePickerContainer.style.display = 'none';
 			textarea.style.display = 'block';
 			textarea.focus();
-			// If not going directly to editor, just call updateDisplayState()
-			// updateDisplayState();
 		} catch (err) {
 			if (err.name !== 'AbortError') { // User cancelled picker
 				console.error('Error opening file:', err);
@@ -159,28 +147,24 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 	});
+
 	// 8. Event listener to switch to edit mode when dialogue content is clicked
 	dialogueWrapper.addEventListener('click', () => {
 		try {
-			// Read directly from localStorage to ensure consistency,
-			// as dialogueWrapper.innerHTML might have formatting quirks.
-			const plainText = localStorage.getItem('multilogue') || '';
-			// Or, if conversion from current HTML is preferred:
-			// const plainText = platoHtmlToPlatoText(dialogueWrapper.innerHTML);
-			textarea.value = plainText;
+			// Read directly from localStorage to ensure consistency
+			textarea.value = localStorage.getItem('multilogue') || '';
 			dialogueWrapper.style.display = 'none';
 			textarea.style.display = 'block';
 			filePickerContainer.style.display = 'none';
 			textarea.focus();
 		} catch (e) {
-			console.error("Error converting HTML to Plato text for editing:", e);
 			alert("Could not switch to edit mode due to a content error.");
 		}
 	});
 
 	// 9. Event listener for saving (Ctrl+Enter) in the textarea
 	textarea.addEventListener('keydown', (event) => {
-		if (event.ctrlKey && !event.shiftKey && event.key === 'Enter') { // Changed from Shift to Enter as per original request context
+		if (event.ctrlKey && !event.shiftKey && event.key === 'Enter') {
 			event.preventDefault();
 			const newText = textarea.value;
 			localStorage.setItem('multilogue', newText);
@@ -198,12 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				alert('Dialogue is empty. Nothing to save.');
 				return; // Prevent saving an empty file
 			}
-
-
 			try {
 				// Always prompt "Save As"
 				const fileHandle = await window.showSaveFilePicker({
-					suggestedName: 'dialogue.txt', // You can customize the suggested name
+					suggestedName: 'multilogue.txt', // You can customize the suggested name
 					types: [{
 						description: 'Text Files',
 						accept: {
@@ -211,21 +193,14 @@ document.addEventListener('DOMContentLoaded', () => {
 						},
 					}],
 				});
-
 				// Create a FileSystemWritableFileStream to write to.
 				const writable = await fileHandle.createWritable();
-
 				// Write the contents of the file to the stream.
 				await writable.write(textToSave);
-
 				// Close the file and write the contents to disk.
 				await writable.close();
 
-				// If file save was successful, then update localStorage
-				localStorage.setItem('multilogue', textToSave);
 				updateDisplayState(); // Refresh the view
-
-				// Optional: alert('Dialogue saved to file!');
 
 			} catch (err) {
 				// Handle errors, e.g., if the user cancels the save dialog
@@ -236,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 	});
+
 	// 11. Event listener for LLM communications (Alt+Shift)
 	document.addEventListener('keydown', function (event) {
 		if (event.altKey && event.shiftKey) {

@@ -31,16 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.error('H1 element not found. UI elements might be misplaced.');
 	}
 
-	// Capture HTML from original static <p class="dialogue"> elements and then hide them.
-	// These elements are not moved, respecting their original structure for other potential uses,
-	// but are hidden to cede display control to the dynamic dialogueWrapper.
-	// const originalStaticDialogueElements = Array.from(contentContainer.querySelectorAll('p.dialogue'));
-	// let initialHtmlFromStatic = '';
-	// originalStaticDialogueElements.forEach(p => {
-	// 	initialHtmlFromStatic += p.outerHTML; // Capture their HTML content
-	// 	p.style.display = 'none';          // Hide the original static element
-	// });
-
 	// 1. Create a wrapper for the dialogue content (will be populated by updateDisplayState)
 	const dialogueWrapper = document.createElement('div');
 	dialogueWrapper.id = 'dialogue-content-wrapper';

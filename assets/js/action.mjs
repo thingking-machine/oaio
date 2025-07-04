@@ -55,9 +55,6 @@ class MachineApp {
       workerUrl: this.configElement.dataset.workerUrl,
     };
     
-    // Fireworks-specific model name adjustment
-    this.settings.llm.model = `accounts/fireworks/models/${this.settings.llm.model}`;
-    
     console.log('Machina settings loaded:', this.settings.machine);
     console.log('LLM settings loaded:', this.settings.llm);
     

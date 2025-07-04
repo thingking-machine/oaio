@@ -14,20 +14,11 @@ self.onmessage = async function (event) {
 
 
 	try {
-		// --- 1. Fetch the token ---
-		console.log('Worker: Fetching the API token from https://localhost/');
-		const tokenResponse = await fetch('https://localhost/' + machineConfig.token); // opeai.txt
-		if (!tokenResponse.ok) {
-			throw new Error(`HTTP error fetching token! status: ${tokenResponse.status}`);
-		}
-		const token = (await tokenResponse.text()).trim();
-		console.log('Worker: Token fetched successfully.');
-
 		// --- 2. Fetch instruction ---
 		let instructionText; // Declare here to ensure it's in scope
 		try {
 			console.log('Worker: Fetching the Machine instruction from https://localhost');
-			const instructionResponse = await fetch('https://localhost/' + machineConfig.instruction);
+			const instructionResponse = await fetch('https://localhost/' + machineConfig.instructions_file);
 			if (!instructionResponse.ok) {
 				console.log(`Worker: HTTP error fetching instruction! status: ${instructionResponse.status}. Using default instruction.`);
 				// Default instruction if fetching fails or file not found
@@ -62,7 +53,7 @@ self.onmessage = async function (event) {
 		// --- 4. Prepare the final API payload ---
 		const defaultApiParameters = {
 			model: llmSettings.model || machineConfig.llm,
-			max_output_tokens: llmSettings.max_output_tokens || 8000,
+			max_output_tokens: llmSettings.max_output_tokens || 8192,
 			temperature: llmSettings.temperature || 1.0,
 			reasoning: {
 				"effort": llmSettings.reasoning_effort || "high",
@@ -82,7 +73,7 @@ self.onmessage = async function (event) {
 		const apiOptions = {
 			method: 'POST',
 			headers: {
-				'Authorization': 'Bearer ' + token,
+				'Authorization': 'Bearer ' + llmSettings.token,
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(finalApiPayload)

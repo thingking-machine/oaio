@@ -3,7 +3,7 @@
  * @param {string} platoHtml - The platoHtml formatted string.
  * @returns {Array<Object>} - Array of message objects. (Note: JSDoc says JSON stringified, actual code returns Array)
  */
-function platoHtmlToCmj(platoHtml) {
+export function platoHtmlToCmj(platoHtml) {
 	if (!platoHtml || typeof platoHtml !== 'string') {
 		throw new Error('Invalid input: platoHtml must be a non-empty string');
 	}
@@ -75,7 +75,7 @@ function platoHtmlToCmj(platoHtml) {
  * @param {string} platoHtml - The platoHtml formatted string.
  * @returns {string} - The platoText formatted string.
  */
-function platoHtmlToPlatoText(platoHtml) {
+export function platoHtmlToPlatoText(platoHtml) {
 	if (typeof platoHtml !== 'string') {
 		throw new Error('Invalid input: platoHtml must be a string');
 	}
@@ -132,7 +132,7 @@ function platoHtmlToPlatoText(platoHtml) {
  * @param {string} platoText - The platoText formatted string.
  * @returns {string} - The platoHtml formatted string.
  */
-function platoTextToPlatoHtml(platoText) {
+export function platoTextToPlatoHtml(platoText) {
 	if (typeof platoText !== 'string') {
 		throw new Error('Invalid input: platoText must be a string');
 	}
@@ -186,7 +186,7 @@ function platoTextToPlatoHtml(platoText) {
  * @param {string} platoText - The platoText formatted string.
  * @returns {Array<Object>} - Array of message objects. (Note: JSDoc in context says JSON stringified, but code returns Array)
  */
-function platoTextToCmj(platoText) {
+export function platoTextToCmj(platoText) {
 	if (typeof platoText !== 'string') {
 		throw new Error('Invalid input: platoText must be a string');
 	}
@@ -250,7 +250,7 @@ function platoTextToCmj(platoText) {
  *                                      Each object should have 'name' and 'content' properties.
  * @returns {string} - The platoText formatted string.
  */
-function CmjToPlatoText(cmjMessages) {
+export function CmjToPlatoText(cmjMessages) {
 	if (!Array.isArray(cmjMessages)) {
 		console.error('Invalid input: cmjMessages must be an array.');
 		// Consider throwing an error for more robust handling:
@@ -289,7 +289,7 @@ function CmjToPlatoText(cmjMessages) {
  * @param {string} llmResponse The raw text response from an LLM.
  * @returns {string} The cleaned and formatted plain text.
  */
-function llmSoupToText(llmResponse) {
+export function llmSoupToText(llmResponse) {
 	if (typeof llmResponse !== 'string') {
 		// Handle non-string inputs gracefully, e.g., by returning an empty string
 		// or throwing an error, depending on desired behavior.
@@ -389,7 +389,7 @@ function llmSoupToText(llmResponse) {
  * @throws {Error} If platoHtml is null, undefined, or not a string.
  * @throws {Error} If window.machineConfig or window.machineConfig.name is not available.
  */
-function platoHtmlToMpuj(platoHtml) {
+export function platoHtmlToMpuj(platoHtml) {
 	if (platoHtml === null || typeof platoHtml !== 'string') {
 		throw new Error('Invalid input: platoHtml must be a string.');
 	}
@@ -464,7 +464,7 @@ function platoHtmlToMpuj(platoHtml) {
  *                            Returns an empty array if platoText is empty or whitespace.
  * @throws {Error} If platoText is null, undefined, or not a string.
  */
-function platoTextToMuj(platoText) {
+export function platoTextToMuj(platoText) {
 	if (platoText === null || typeof platoText !== 'string') {
 		throw new Error('Invalid input: platoText must be a string.');
 	}
@@ -549,7 +549,7 @@ function platoTextToMuj(platoText) {
  * @throws {Error} If platoHtml is null, undefined, or not a string.
  * @throws {Error} If window.machineConfig.name is not available or empty.
  */
-function platoHtmlToMuj(platoHtml) {
+export function platoHtmlToMuj(platoHtml) {
     if (platoHtml === null || typeof platoHtml !== 'string') {
         throw new Error('Invalid input: platoHtml must be a string.');
     }

@@ -549,7 +549,7 @@ export function platoTextToMuj(platoText) {
  * @throws {Error} If platoHtml is null, undefined, or not a string.
  * @throws {Error} If window.machineConfig.name is not available or empty.
  */
-export function platoHtmlToMuj(platoHtml) {
+export function platoHtmlToMuj(platoHtml, machineName) {
     if (platoHtml === null || typeof platoHtml !== 'string') {
         throw new Error('Invalid input: platoHtml must be a string.');
     }
@@ -557,11 +557,11 @@ export function platoHtmlToMuj(platoHtml) {
         return []; // Return empty array for empty or whitespace-only HTML
     }
 
-    if (!window.machineConfig || typeof window.machineConfig.name !== 'string' || !window.machineConfig.name.trim()) {
+    if (!window.machineConfig || typeof machineConfig.name !== 'string' || !window.machineConfig.name.trim()) {
         console.error('platoHtmlToMuj: machineConfig.name is not available or empty. Please ensure window.machineConfig.name is correctly set.');
         throw new Error('machineConfig.name is not configured. Cannot determine assistant messages.');
     }
-    const assistantNameUpper = window.machineConfig.name.toUpperCase();
+    const assistantNameUpper = machineName.toUpperCase();
 
     const mujMessages = [];
     let currentUserContentParts = []; // Stores "Speaker: Utterance" strings for the current user block

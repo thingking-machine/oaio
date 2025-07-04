@@ -305,7 +305,7 @@ class MachineApp {
     
     try {
       const cmjMessages = platoHtmlToCmj(htmlContent);
-      const mujMessages = platoHtmlToMuj(htmlContent)
+      const mujMessages = platoHtmlToMuj(htmlContent, this.settings.machine.name)
       
       const workerPayload = {
         config: this.settings.machine,

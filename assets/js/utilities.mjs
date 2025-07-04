@@ -557,10 +557,6 @@ export function platoHtmlToMuj(platoHtml, machineName) {
         return []; // Return empty array for empty or whitespace-only HTML
     }
 
-    if (!window.machineConfig || typeof machineConfig.name !== 'string' || !window.machineConfig.name.trim()) {
-        console.error('platoHtmlToMuj: machineConfig.name is not available or empty. Please ensure window.machineConfig.name is correctly set.');
-        throw new Error('machineConfig.name is not configured. Cannot determine assistant messages.');
-    }
     const assistantNameUpper = machineName.toUpperCase();
 
     const mujMessages = [];

@@ -23,8 +23,8 @@ app:
   worker_name: oaioapi.js
 
 lm:
-  model: o3-mini
-  max_output_tokens: 8192
+  model: o1
+  max_output_tokens: 32768
   reasoning_effort: high
   reasoning_summary: auto
   temperature: 1.0

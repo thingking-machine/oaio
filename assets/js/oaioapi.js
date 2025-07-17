@@ -57,7 +57,7 @@ self.onmessage = async function (event) {
 			temperature: llmSettings.temperature || 1.0,
 			reasoning: {
 				"effort": llmSettings.reasoning_effort || "high",
-				"summary": llmSettings.reasoning_summary || "auto"
+				"summary": llmSettings.reasoning_summary || "detailed"
 			}
 		};
 		console.log('Worker: Default API parameters:', defaultApiParameters)

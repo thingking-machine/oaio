@@ -91,64 +91,6 @@ export function platoHtmlToCmj(platoHtml, machineName) {
 	return messages;
 }
 
-//
-// /**
-//  * Transforms platoHtml format to platoText format.
-//  * @param {string} platoHtml - The platoHtml formatted string.
-//  * @returns {string} - The platoText formatted string.
-//  */
-// export function platoHtmlToPlatoText(platoHtml) {
-// 	if (typeof platoHtml !== 'string') {
-// 		throw new Error('Invalid input: platoHtml must be a string');
-// 	}
-// 	if (!platoHtml.trim()) {
-// 		return '';
-// 	}
-//
-// 	let result = '';
-// 	const parser = new DOMParser();
-// 	const doc = parser.parseFromString(platoHtml, 'text/html');
-// 	const paragraphs = doc.querySelectorAll('p.dialogue');
-//
-// 	paragraphs.forEach(p => {
-// 		const speakerSpan = p.querySelector('span.speaker');
-// 		if (!speakerSpan) return;
-//
-// 		const speaker = speakerSpan.textContent.trim();
-//
-// 		// --- New utterance extraction logic ---
-// 		const rawHtmlOfP = p.innerHTML;
-// 		const speakerSpanHtml = speakerSpan.outerHTML;
-// 		const speakerSpanEndIndex = rawHtmlOfP.indexOf(speakerSpanHtml) + speakerSpanHtml.length;
-//
-// 		let utteranceHtml = rawHtmlOfP.substring(speakerSpanEndIndex);
-//
-// 		// The template in platoTextToPlatoHtml adds a space: <span ...></span> ${utterance}
-// 		// Remove this specific structural space if it exists.
-// 		if (utteranceHtml.startsWith(' ')) {
-// 			utteranceHtml = utteranceHtml.substring(1);
-// 		}
-//
-// 		// 1. Convert <br />&emsp; (and variants with optional space) to \n\t
-// 		let processedUtterance = utteranceHtml.replace(/<br\s*\/?>\s*&emsp;/gi, '\n\t');
-//
-// 		// 2. Convert remaining <br /> (and variants) to \n
-// 		processedUtterance = processedUtterance.replace(/<br\s*\/?>/gi, '\n');
-//
-// 		// 3. Strip any other HTML tags and decode entities (e.g., &lt; to <)
-// 		const decoder = document.createElement('div');
-// 		decoder.innerHTML = processedUtterance;
-// 		const finalUtterance = decoder.textContent.trim(); // Trim after all processing
-// 		// --- End of new utterance extraction logic ---
-//
-// 		if (speaker || finalUtterance) { // Ensure there's something to add
-// 			result += `${speaker}: ${finalUtterance}\n\n`;
-// 		}
-// 	});
-//
-// 	return result;
-// }
-
 /**
  * Transforms platoText format to platoHtml format.
  * @param {string} platoText - The platoText formatted string.

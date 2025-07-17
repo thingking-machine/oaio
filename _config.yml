@@ -24,9 +24,9 @@ app:
 
 lm:
   model: o1
-  max_output_tokens: 32768
+  max_output_tokens: 100000
   reasoning_effort: high
-  reasoning_summary: auto
+  reasoning_summary: detailed
   temperature: 1.0
 
 github_settings:

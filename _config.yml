@@ -18,6 +18,7 @@ machine:
   instructions_file: oaio_thingking.txt
   token: openai.txt
   apiUrl: https://api.openai.com/v1/responses
+  fallback_llm: o3
 
 app:
   worker_name: oaioapi.js

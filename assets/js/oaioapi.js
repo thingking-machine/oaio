@@ -14,23 +14,23 @@ self.onmessage = async function (event) {
 
 
 	try {
+		// --- 1. Fetch Token was here ---
 		// --- 2. Fetch instruction ---
-		let instructionText; // Declare here to ensure it's in scope
+		let instructionText = `The assistant is ${machineConfig.name}.`; // Declare here to ensure it's in scope
 		try {
 			console.log(`Worker: Fetching the Machine instruction from https://localhost/${machineConfig.instructions_file}`);
 			const instructionResponse = await fetch('https://localhost/' + machineConfig.instructions_file);
 			if (!instructionResponse.ok) {
-				console.log(`Worker: HTTP error fetching instruction! status: ${instructionResponse.status}. Using default instruction.`);
 				// Default instruction if fetching fails or file not found
-				instructionText = "You are a helpful assistant.";
+				console.log(`Worker: HTTP error fetching instruction! status: ${instructionResponse.status}. Using default instruction.`);
 			} else {
 				instructionText = (await instructionResponse.text()).trim();
 				console.log('Worker: Instruction fetched successfully.');
 				console.log('Worker: Instruction:', instructionText);
 			}
 		} catch (fetchError) {
+			// Default instruction on any fetch error
 			console.error('Worker: Error during instruction file fetch:', fetchError.message, '. Using default instruction.');
-			instructionText = "You are a helpful assistant."; // Default instruction on any fetch error
 		}
 
 		// --- 3. Prepare messages for the API call ---
@@ -52,7 +52,7 @@ self.onmessage = async function (event) {
 
 		// --- 4. Prepare the final API payload ---
 		const defaultApiParameters = {
-			model: llmSettings.model || machineConfig.llm,
+			model: llmSettings.model || machineConfig.fallback_llm,
 			max_output_tokens: llmSettings.max_output_tokens || 8192,
 			temperature: llmSettings.temperature || 1.0,
 			reasoning: {

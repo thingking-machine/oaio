@@ -60,6 +60,7 @@ class MachineApp {
     
     this._applyQueryParameters();
     console.log('Final LLM Settings:', this.settings.llm);
+    console.log('Final Machina Settings:', this.settings.machine);
   }
   
   /**

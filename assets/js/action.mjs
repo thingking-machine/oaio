@@ -67,8 +67,6 @@ class MachineApp {
    */
   _applyQueryParameters() {
     const queryParams = new URLSearchParams(window.location.search);
-    // set default instruction of the Machina
-    this.settings.llm['instructions_file'] = this.settings.machine['instructions_file']
     for (const [key, value] of queryParams.entries()) {
       if (['temperature'].includes(key)) {
         const numValue = parseFloat(value);
@@ -76,6 +74,9 @@ class MachineApp {
       } else if (['max_output_tokens'].includes(key)) {
         const numValue = parseInt(value, 10);
         this.settings.llm[key] = isNaN(numValue) ? value : numValue;
+      } else if (['instructions_file'].includes(key)) {
+        // Change default Machina instructions file name if received.
+        this.settings.machine['instructions_file'] = value;
       } else {
         this.settings.llm[key] = value;
       }

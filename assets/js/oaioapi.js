@@ -17,8 +17,8 @@ self.onmessage = async function (event) {
 		// --- 2. Fetch instruction ---
 		let instructionText; // Declare here to ensure it's in scope
 		try {
-			console.log(`Worker: Fetching the Machine instruction from https://localhost/${llmSettings.instructions_file}`);
-			const instructionResponse = await fetch('https://localhost/' + llmSettings.instructions_file);
+			console.log(`Worker: Fetching the Machine instruction from https://localhost/${machineConfig.instructions_file}`);
+			const instructionResponse = await fetch('https://localhost/' + machineConfig.instructions_file);
 			if (!instructionResponse.ok) {
 				console.log(`Worker: HTTP error fetching instruction! status: ${instructionResponse.status}. Using default instruction.`);
 				// Default instruction if fetching fails or file not found

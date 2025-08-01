@@ -67,7 +67,7 @@ class MachineApp {
    */
   _applyQueryParameters() {
     const queryParams = new URLSearchParams(window.location.search);
-    // set default instruction
+    // set default instruction of the Machina
     this.settings.llm['instructions_file'] = this.settings.machine['instructions_file']
     for (const [key, value] of queryParams.entries()) {
       if (['temperature'].includes(key)) {

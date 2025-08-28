@@ -1,1 +1,1 @@
-### Thingking-Machine (oaio).
+### Thingking-Machine (oaio)

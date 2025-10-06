@@ -117,11 +117,8 @@ class MachineApp {
     
     // Listen for custom events and browser events
     window.addEventListener('localStorageChanged', this.updateDisplayState);
-    window.addEventListener('message', (event) => {
-      // Security: check origin and message source.
-      if (event.origin === window.location.origin && event.data?.source === 'multilogue-storage-update') {
-        if (event.data.key === 'multilogue') this.updateDisplayState();
-      }
+    document.addEventListener('multilogue-storage-update', (event) => {
+      this.updateDisplayState();
     });
     window.addEventListener('runMachineCommand', this.runLlm);
     document.addEventListener('visibilitychange', () => {

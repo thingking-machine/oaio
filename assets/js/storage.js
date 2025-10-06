@@ -11,10 +11,9 @@
         timestamp: Date.now()
       }
     }));
-    window.postMessage({
-      source: 'multilogue-storage-update',
-      key: key
-    }, window.location.origin);
+    document.dispatchEvent(new CustomEvent('multilogue-storage-update', {
+      bubbles: true
+    }));
   };
 
   // Override localStorage.removeItem

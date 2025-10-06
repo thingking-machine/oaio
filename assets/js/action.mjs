@@ -117,9 +117,12 @@ class MachineApp {
     
     // Listen for custom events and browser events
     window.addEventListener('localStorageChanged', this.updateDisplayState);
-    // window.addEventListener('storage', (event) => {
-    //   if (event.key === 'multilogue') this.updateDisplayState();
-    // });
+    window.addEventListener('message', (event) => {
+      // Security: check origin and message source.
+      if (event.origin === window.location.origin && event.data?.source === 'multilogue-storage-update') {
+        if (event.data.key === 'multilogue') this.updateDisplayState();
+      }
+    });
     window.addEventListener('runMachineCommand', this.runLlm);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
@@ -129,7 +132,6 @@ class MachineApp {
   }
   
   // --- Event Handlers & Core Logic Methods ---
-  
   _handleTokenSave = () => {
     const tokenInputVal = this.elements.tokenPopupInput.value;
     if (tokenInputVal && tokenInputVal.trim()) {

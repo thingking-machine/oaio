@@ -117,6 +117,7 @@ class MachineApp {
     
     // Listen for custom events and browser events
     window.addEventListener('localStorageChanged', this.updateDisplayState);
+    window.addEventListener('localStorageUpdated', this.updateDisplayState);
     window.addEventListener('runMachineCommand', this.runLlm);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {

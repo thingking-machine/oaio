@@ -34,15 +34,18 @@ self.onmessage = async function (event) {
 		}
 
 		// --- 3. Prepare messages for the API call ---
+		const systemInstructionMessage = {role: "system", content: instructionText};
 		let messagesForApi;
 
 		// Check if the main thread sent any messages
 		if (messages && Array.isArray(messages) && messages.length > 0) {
-			messagesForApi = messages;
+			// User provided messages: unshift/prepend the fetched system instruction
+			messagesForApi = [systemInstructionMessage, ...messages];
 			console.log('All messages for API:', messagesForApi)
 		} else {
-			// No messages from user, or an empty array: use  a default user prompt
+			// No messages from user, or an empty array: use the system instruction and a default user prompt
 			messagesForApi = [
+				systemInstructionMessage,
 				{role: "user", content: "What model are you?"} // Default user prompt
 			];
 		}
@@ -50,7 +53,6 @@ self.onmessage = async function (event) {
 		// --- 4. Prepare the final API payload ---
 		const defaultApiParameters = {
 			model: llmSettings.model || machineConfig.llm,
-			instructions: instructionText,
 			max_output_tokens: llmSettings.max_output_tokens || 8192,
 			temperature: llmSettings.temperature || 1.0,
 			reasoning: {

@@ -36,7 +36,7 @@ self.onmessage = async function (event) {
 		// --- 3. Prepare messages for the API call ---
 		let messagesForApi;
 
-		// Check if the main thread sent any messages
+		// Check if the main thread sent any messages and add 'developer' messages here.
 		if (messages && Array.isArray(messages) && messages.length > 0) {
 			messagesForApi = messages;
 			console.log('All messages for API:', messagesForApi)
